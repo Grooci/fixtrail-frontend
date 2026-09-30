@@ -1,0 +1,41 @@
+{
+  "users": [
+    { "id": "u1", "name": "Amina Nakato", "email": "customer@fixtrail.test", "password": "password123", "role": "customer", "phone": "0700000001", "createdAt": "2026-09-20T09:00:00Z" },
+    { "id": "u2", "name": "Brian Okello", "email": "brian@fixtrail.test", "password": "password123", "role": "provider", "phone": "0700000002", "createdAt": "2026-09-18T09:00:00Z" },
+    { "id": "u3", "name": "Grace Atim", "email": "grace@fixtrail.test", "password": "password123", "role": "provider", "phone": "0700000003", "createdAt": "2026-09-19T09:00:00Z" }
+  ],
+  "categories": [
+    { "id": "c1", "name": "Plumbing", "icon": "wrench" },
+    { "id": "c2", "name": "Electrical", "icon": "zap" },
+    { "id": "c3", "name": "Carpentry", "icon": "hammer" },
+    { "id": "c4", "name": "Cleaning", "icon": "sparkles" }
+  ],
+  "providers": [
+    { "id": "p1", "userId": "u2", "bio": "Licensed plumber with 8 years of experience.", "skills": ["Pipe repair", "Water heater install"], "categoryIds": ["c1"], "serviceArea": "Kampala Central", "availability": "Mon-Sat, 8am-6pm", "rating": 4.6 },
+    { "id": "p2", "userId": "u3", "bio": "Electrician for homes and small offices.", "skills": ["Wiring", "Socket repair", "Lighting"], "categoryIds": ["c2"], "serviceArea": "Nakawa", "availability": "Mon-Fri, 9am-5pm", "rating": 4.3 }
+  ],
+  "requests": [
+    {
+      "id": "r1", "customerId": "u1", "providerId": "p1", "categoryId": "c1",
+      "title": "Leaking kitchen sink", "description": "Water drips under the sink whenever the tap runs.",
+      "photos": [], "location": "Ntinda, Kampala", "status": "completed",
+      "statusHistory": [
+        { "status": "requested", "at": "2026-09-21T08:00:00Z" },
+        { "status": "accepted", "at": "2026-09-21T10:00:00Z" },
+        { "status": "in_progress", "at": "2026-09-22T09:00:00Z" },
+        { "status": "completed", "at": "2026-09-22T12:00:00Z" }
+      ],
+      "createdAt": "2026-09-21T08:00:00Z", "updatedAt": "2026-09-22T12:00:00Z"
+    },
+    {
+      "id": "r2", "customerId": "u1", "categoryId": "c2",
+      "title": "Socket sparking in bedroom", "description": "The wall socket sparks when I plug in a charger.",
+      "photos": [], "location": "Ntinda, Kampala", "status": "requested",
+      "statusHistory": [ { "status": "requested", "at": "2026-09-29T15:00:00Z" } ],
+      "createdAt": "2026-09-29T15:00:00Z", "updatedAt": "2026-09-29T15:00:00Z"
+    }
+  ],
+  "reviews": [
+    { "id": "rv1", "requestId": "r1", "customerId": "u1", "providerId": "p1", "rating": 5, "comment": "Fast and neat work.", "createdAt": "2026-09-22T14:00:00Z" }
+  ]
+}
