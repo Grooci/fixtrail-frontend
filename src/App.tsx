@@ -4,6 +4,10 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CustomerHome from "./pages/CustomerHome";
 import ProviderHome from "./pages/ProviderHome";
+import Categories from "./pages/Categories";
+import Providers from "./pages/Providers";
+import NewRequest from "./pages/NewRequest";
+import MyRequests from "./pages/MyRequests";
 
 export default function App() {
   return (
@@ -15,6 +19,10 @@ export default function App() {
 
         <Route element={<ProtectedRoute role="customer" />}>
           <Route path="/customer" element={<CustomerHome />} />
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/providers" element={<Providers />} />
+          <Route path="/requests/new" element={<NewRequest />} />
+          <Route path="/requests" element={<MyRequests />} />
         </Route>
 
         <Route element={<ProtectedRoute role="provider" />}>

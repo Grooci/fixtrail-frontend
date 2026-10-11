@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getCurrentUser, logout } from "../services/authService";
 
 export default function CustomerHome() {
@@ -24,6 +24,13 @@ export default function CustomerHome() {
         <p className="muted">
           Service categories, the request form, and request history arrive in Module 3.
         </p>
+        <Link to="/categories">Browse services</Link>
+        <br />
+        <Link to="/providers">Find providers</Link>
+        <br />
+        <Link to="/requests/new">New request</Link>
+        <br />
+        <Link to="/requests">My requests</Link>
       </section>
     </main>
   );
