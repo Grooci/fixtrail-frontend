@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getCurrentUser, logout } from "../services/authService";
 
 export default function ProviderHome() {
@@ -21,9 +21,17 @@ export default function ProviderHome() {
       </header>
       <section className="card">
         <h2>Provider dashboard</h2>
-        <p className="muted">
-          Profile setup, incoming requests, and job status tracking arrive in Module 4.
-        </p>
+        <ul>
+          <li>
+            <Link to="/provider/profile">My profile and categories</Link>
+          </li>
+          <li>
+            <Link to="/provider/requests">Incoming requests</Link>
+          </li>
+          <li>
+            <Link to="/provider/jobs">My jobs</Link>
+          </li>
+        </ul>
       </section>
     </main>
   );

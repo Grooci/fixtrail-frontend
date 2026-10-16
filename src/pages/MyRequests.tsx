@@ -31,6 +31,12 @@ export default function MyRequests() {
               <strong>{r.category_name ?? "Service request"}</strong>
               <div>{r.description}</div>
               <div>Status: {r.status}</div>
+              {r.provider_name && (
+                <div>
+                  Provider: {r.provider_name}
+                  {r.provider_phone ? ` (${r.provider_phone})` : ""}
+                </div>
+              )}
               <div>Location: {r.location}</div>
               <div className="muted">
                 Sent {new Date(r.created_at).toLocaleString()}

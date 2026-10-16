@@ -16,6 +16,8 @@ export interface ServiceRequestItem {
   location: string | null;
   status: string;
   created_at: string;
+  provider_name?: string | null;
+  provider_phone?: string | null;
 }
 
 export function createRequest(input: NewRequestInput) {

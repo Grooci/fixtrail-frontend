@@ -8,6 +8,9 @@ import Categories from "./pages/Categories";
 import Providers from "./pages/Providers";
 import NewRequest from "./pages/NewRequest";
 import MyRequests from "./pages/MyRequests";
+import BrowseRequests from "./pages/BrowseRequests";
+import MyJobs from "./pages/MyJobs";
+import ProviderSetup from "./pages/ProviderSetup";
 
 export default function App() {
   return (
@@ -27,6 +30,9 @@ export default function App() {
 
         <Route element={<ProtectedRoute role="provider" />}>
           <Route path="/provider" element={<ProviderHome />} />
+          <Route path="/provider/profile" element={<ProviderSetup />} />
+          <Route path="/provider/requests" element={<BrowseRequests />} />
+          <Route path="/provider/jobs" element={<MyJobs />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
