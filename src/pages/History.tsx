@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { getSession } from "../services/authService";
 import { historyService } from "../services/historyService";
 import RatingModal from "../components/RatingModal";
 import Stars from "../components/Stars";
+import StatusBadge from "../components/StatusBadge";
 import type { JobStatus, ProviderHistoryItem, RequestSummary } from "../types";
 
 const PAGE_SIZE = 10;
@@ -11,7 +11,6 @@ const STATUSES: JobStatus[] = ["Requested", "Accepted", "In Progress", "Complete
 
 export default function History() {
   const isCustomer = getSession()?.role === "customer";
-  const home = isCustomer ? "/customer" : "/provider";
 
   const [status, setStatus] = useState<JobStatus | "">("");
   const [sort, setSort] = useState<"newest" | "oldest">("newest");
@@ -46,73 +45,88 @@ export default function History() {
 
   useEffect(() => { load(); }, [load]);
 
+  function pickStatus(s: JobStatus | "") {
+    setStatus(s);
+    setOffset(0);
+  }
+
   const from = total === 0 ? 0 : offset + 1;
   const to = Math.min(offset + PAGE_SIZE, total);
 
   return (
     <main className="page">
-      <Link to={home}>Back to dashboard</Link>
-      <h1>{isCustomer ? "Request history" : "Job history"}</h1>
-
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", margin: "12px 0" }}>
-        <label>
-          Status{" "}
-          <select
-            value={status}
-            onChange={(e) => { setStatus(e.target.value as JobStatus | ""); setOffset(0); }}
-          >
-            <option value="">All</option>
-            {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </label>
-        <label>
-          Sort{" "}
-          <select
-            value={sort}
-            onChange={(e) => { setSort(e.target.value as "newest" | "oldest"); setOffset(0); }}
-          >
-            <option value="newest">Newest first</option>
-            <option value="oldest">Oldest first</option>
-          </select>
-        </label>
+      <div className="page-head">
+        <h1>{isCustomer ? "Request history" : "Job history"}</h1>
+        <p className="muted">
+          {isCustomer ? "Everything you have requested so far." : "Every job you have taken on."}
+        </p>
       </div>
 
-      {loading && <p>Loading...</p>}
+      <div className="toolbar">
+        <div className="filters">
+          <button type="button" className={`pill${status === "" ? " on" : ""}`} onClick={() => pickStatus("")}>
+            All
+          </button>
+          {STATUSES.map((s) => (
+            <button
+              key={s}
+              type="button"
+              className={`pill${status === s ? " on" : ""}`}
+              onClick={() => pickStatus(s)}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+        <select
+          className="sort-select"
+          value={sort}
+          onChange={(e) => { setSort(e.target.value as "newest" | "oldest"); setOffset(0); }}
+          aria-label="Sort order"
+        >
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+        </select>
+      </div>
+
+      {loading && <p className="muted">Loading...</p>}
       {error && (
-        <p style={{ color: "#c0392b" }}>
-          {error} <button onClick={load}>Retry</button>
+        <p className="error">
+          {error} <button className="link-btn" onClick={load}>Retry</button>
         </p>
       )}
 
       {!loading && !error && total === 0 && (
-        <p>
+        <div className="empty">
           {status
             ? `No ${isCustomer ? "requests" : "jobs"} with status "${status}".`
             : isCustomer
               ? "You haven't sent any requests yet."
               : "You haven't taken any jobs yet."}
-        </p>
+        </div>
       )}
 
       {!loading && !error && isCustomer && (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul className="list">
           {customerItems.map((r) => (
-            <li key={r.request_id} style={{ border: "1px solid #ddd", borderRadius: 10, padding: 12, marginBottom: 8 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+            <li key={r.request_id} className="item">
+              <div className="item-head">
                 <strong>{r.category_name ?? "General"}</strong>
-                <span>{r.status}</span>
+                <StatusBadge status={r.status} />
               </div>
-              <p style={{ margin: "6px 0" }}>{r.description}</p>
+              <p>{r.description}</p>
               <small className="muted">
                 {r.provider_name ? `Provider: ${r.provider_name} · ` : ""}
                 {new Date(r.created_at).toLocaleDateString()}
               </small>
               {r.status === "Completed" && r.job_id && (
-                <div style={{ marginTop: 8 }}>
+                <div className="item-actions">
                   {r.has_review ? (
-                    <span style={{ color: "#2e7d32" }}>Reviewed ✓</span>
+                    <span className="reviewed">Reviewed</span>
                   ) : (
-                    <button onClick={() => setRating(r)}>Rate this job</button>
+                    <button className="btn-outline btn-sm" onClick={() => setRating(r)}>
+                      Rate this job
+                    </button>
                   )}
                 </div>
               )}
@@ -122,19 +136,19 @@ export default function History() {
       )}
 
       {!loading && !error && !isCustomer && (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul className="list">
           {providerItems.map((j) => (
-            <li key={j.job_id} style={{ border: "1px solid #ddd", borderRadius: 10, padding: 12, marginBottom: 8 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+            <li key={j.job_id} className="item">
+              <div className="item-head">
                 <strong>{j.category_name ?? "General"}</strong>
-                <span>{j.status}</span>
+                <StatusBadge status={j.status} />
               </div>
-              <p style={{ margin: "6px 0" }}>{j.description}</p>
+              <p>{j.description}</p>
               <small className="muted">
                 {j.customer_name} · updated {new Date(j.updated_at).toLocaleDateString()}
               </small>
               {j.rating !== null && (
-                <div style={{ marginTop: 8 }}>
+                <div className="item-actions">
                   <Stars value={j.rating} />
                 </div>
               )}
@@ -144,12 +158,12 @@ export default function History() {
       )}
 
       {total > PAGE_SIZE && (
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-          <button disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}>
+        <div className="pager">
+          <button className="btn-outline btn-sm" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}>
             Previous
           </button>
-          <span className="muted">{from}–{to} of {total}</span>
-          <button disabled={to >= total} onClick={() => setOffset(offset + PAGE_SIZE)}>
+          <span className="muted">{from} to {to} of {total}</span>
+          <button className="btn-outline btn-sm" disabled={to >= total} onClick={() => setOffset(offset + PAGE_SIZE)}>
             Next
           </button>
         </div>

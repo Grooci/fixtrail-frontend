@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import {
   getCategoryOptions,
   getProviders,
@@ -56,66 +55,94 @@ export default function Providers() {
 
   return (
     <main className="page">
-      <Link to="/customer">Back to dashboard</Link>
-      <h1>Providers</h1>
+      <div className="page-head">
+        <h1>Providers</h1>
+        <p className="muted">Compare ratings and read what other customers said.</p>
+      </div>
 
-      <label>
-        Category{" "}
-        <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
-          <option value="">All</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>{c.name}</option>
-          ))}
-        </select>
-      </label>
+      <div className="filters">
+        <button
+          type="button"
+          className={`pill${categoryId === "" ? " on" : ""}`}
+          onClick={() => setCategoryId("")}
+        >
+          All
+        </button>
+        {categories.map((c) => (
+          <button
+            key={c.id}
+            type="button"
+            className={`pill${categoryId === c.id ? " on" : ""}`}
+            onClick={() => setCategoryId(c.id)}
+          >
+            {c.name}
+          </button>
+        ))}
+      </div>
 
-      {loading && <p>Loading providers...</p>}
-      {error && <p style={{ color: "#c0392b" }}>{error}</p>}
-
-      {!loading && !error && providers.length === 0 && <p>No providers found.</p>}
+      {loading && <p className="muted">Loading providers...</p>}
+      {error && <p className="error">{error}</p>}
+      {!loading && !error && providers.length === 0 && (
+        <div className="empty">No providers found.</div>
+      )}
 
       {!loading && !error && (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <ul className="list">
           {providers.map((p) => (
-            <li key={p.id} style={{ border: "1px solid #ddd", borderRadius: 10, padding: 12, margin: "12px 0" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
-                <strong>{p.name}</strong>
-                <span className="muted">{p.is_available ? "Available" : "Unavailable"}</span>
+            <li key={p.id} className="item">
+              <div className="provider-top">
+                <span className="avatar">{p.name.charAt(0).toUpperCase()}</span>
+                <div className="provider-id">
+                  <strong>{p.name}</strong>
+                  <div className="rating-line">
+                    {p.total_reviews > 0 ? (
+                      <>
+                        <Stars value={p.average_rating} />
+                        <span className="muted">
+                          {p.average_rating.toFixed(1)} ({p.total_reviews} review
+                          {p.total_reviews === 1 ? "" : "s"})
+                        </span>
+                      </>
+                    ) : (
+                      <span className="muted">No reviews yet</span>
+                    )}
+                  </div>
+                </div>
+                <span className={`badge${p.is_available ? " s-completed" : ""}`}>
+                  {p.is_available ? "Available" : "Unavailable"}
+                </span>
               </div>
 
-              <div style={{ margin: "4px 0" }}>
-                {p.total_reviews > 0 ? (
-                  <>
-                    <Stars value={p.average_rating} />{" "}
-                    <span className="muted">
-                      {p.average_rating.toFixed(1)} ({p.total_reviews} review{p.total_reviews === 1 ? "" : "s"})
-                    </span>
-                  </>
-                ) : (
-                  <span className="muted">No reviews yet</span>
-                )}
-              </div>
+              <p>{p.bio || "No bio yet"}</p>
+              <small className="muted">Area: {p.service_area || "Not set"}</small>
 
-              <div>{p.bio || "No bio yet"}</div>
-              <div>Area: {p.service_area || "Not set"}</div>
               {p.categories.length > 0 && (
-                <div className="muted">Services: {p.categories.join(", ")}</div>
+                <div className="chips">
+                  {p.categories.map((name) => (
+                    <span key={name} className="chip">{name}</span>
+                  ))}
+                </div>
               )}
 
               {p.total_reviews > 0 && (
-                <button style={{ marginTop: 8 }} onClick={() => toggleReviews(p.id)}>
-                  {openId === p.id ? "Hide reviews" : "Show reviews"}
-                </button>
+                <div className="item-actions">
+                  <button className="btn-outline btn-sm" onClick={() => toggleReviews(p.id)}>
+                    {openId === p.id ? "Hide reviews" : "Show reviews"}
+                  </button>
+                </div>
               )}
 
               {openId === p.id && (
-                <div style={{ marginTop: 8 }}>
-                  {reviewsLoading && !reviews[p.id] && <p>Loading reviews...</p>}
-                  {reviewsError && <p style={{ color: "#c0392b" }}>{reviewsError}</p>}
+                <div className="reviews">
+                  {reviewsLoading && !reviews[p.id] && <p className="muted">Loading reviews...</p>}
+                  {reviewsError && <p className="error">{reviewsError}</p>}
                   {reviews[p.id]?.map((r) => (
-                    <div key={r.id} style={{ borderTop: "1px solid #eee", padding: "8px 0" }}>
-                      <strong>{r.reviewer_name}</strong> <Stars value={r.rating} />
-                      {r.comment && <p style={{ margin: "4px 0" }}>{r.comment}</p>}
+                    <div key={r.id} className="review">
+                      <div className="item-head">
+                        <strong>{r.reviewer_name}</strong>
+                        <Stars value={r.rating} />
+                      </div>
+                      {r.comment && <p>{r.comment}</p>}
                       <small className="muted">{new Date(r.created_at).toLocaleDateString()}</small>
                     </div>
                   ))}

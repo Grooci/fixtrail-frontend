@@ -1,36 +1,44 @@
-import { Link, useNavigate } from "react-router-dom";
-import { getCurrentUser, logout } from "../services/authService";
+import { Link } from "react-router-dom";
+import { getCurrentUser } from "../services/authService";
 import ProviderDashboard from "./ProviderDashboard";
+import Icon, { type IconName } from "../components/Icon";
+
+const TILES: { to: string; icon: IconName; title: string; text: string }[] = [
+  { to: "/provider/requests", icon: "inbox", title: "Incoming requests", text: "Accept or decline new work." },
+  { to: "/provider/jobs", icon: "briefcase", title: "My jobs", text: "Update the status of active jobs." },
+  { to: "/provider/profile", icon: "user", title: "My profile", text: "Edit your bio, area and services." },
+  { to: "/history", icon: "clock", title: "History", text: "Look back at completed work." },
+];
 
 export default function ProviderHome() {
-  const navigate = useNavigate();
   const user = getCurrentUser();
-
-  function handleLogout() {
-    logout();
-    navigate("/login");
-  }
+  const firstName = user?.name.split(" ")[0] ?? "there";
 
   return (
     <main className="page">
-      <header className="topbar">
-        <strong>FixTrail</strong>
-        <div>
-          <span className="muted">{user?.name} (Provider)</span>
-          <button onClick={handleLogout}>Log out</button>
+      <section
+        className="hero"
+        style={{ backgroundImage: "url(/images/home-provider.jpg)" }}
+      >
+        <div className="hero-inner">
+          <p className="eyebrow">Provider</p>
+          <h1>Welcome back, {firstName}.</h1>
+          <p>Check new requests in your area and keep your jobs moving.</p>
+          <Link to="/provider/requests" className="btn btn-light">View incoming requests</Link>
         </div>
-      </header>
-
-      <nav style={{ display: "flex", gap: 16, flexWrap: "wrap", margin: "12px 0" }}>
-        <Link to="/provider/profile">My profile and categories</Link>
-        <Link to="/provider/requests">Incoming requests</Link>
-        <Link to="/provider/jobs">My jobs</Link>
-        <Link to="/history">History</Link>
-      </nav>
-
-      <section className="card">
-        <ProviderDashboard />
       </section>
+
+      <section className="tiles">
+        {TILES.map((t) => (
+          <Link key={t.to} to={t.to} className="tile">
+            <span className="tile-icon"><Icon name={t.icon} /></span>
+            <strong>{t.title}</strong>
+            <span className="muted">{t.text}</span>
+          </Link>
+        ))}
+      </section>
+
+      <ProviderDashboard />
     </main>
   );
 }

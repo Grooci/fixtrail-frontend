@@ -6,6 +6,7 @@ import {
   type JobStatus,
   type ProviderJob,
 } from "../services/providerService";
+import StatusBadge from "../components/StatusBadge";
 
 const STEPS: JobStatus[] = ["Accepted", "In Progress", "Completed"];
 
@@ -43,61 +44,61 @@ export default function MyJobs() {
     }
   }
 
-  if (loading) return <p>Loading jobs...</p>;
-
   return (
     <main className="page">
-      <Link to="/provider">Back to dashboard</Link>
-      <h1>My jobs</h1>
+      <div className="page-head">
+        <h1>My jobs</h1>
+        <p className="muted">Move each job forward as the work progresses.</p>
+      </div>
 
-      {error && <p role="alert">{error}</p>}
+      {error && <p className="error" role="alert">{error}</p>}
+      {loading && <p className="muted">Loading jobs...</p>}
 
-      {jobs.length === 0 ? (
-        <p className="muted">
+      {!loading && jobs.length === 0 && (
+        <div className="empty">
           You have no jobs yet. <Link to="/provider/requests">Browse requests</Link>
-        </p>
-      ) : (
-        <ul>
-          {jobs.map((job) => {
-            const next = NEXT[job.status];
-            return (
-              <li key={job.id} className="card">
+        </div>
+      )}
+
+      <ul className="list">
+        {jobs.map((job) => {
+          const next = NEXT[job.status];
+          const stepIndex = STEPS.indexOf(job.status);
+          return (
+            <li key={job.id} className="item">
+              <div className="item-head">
                 <strong>{job.category_name ?? "Service request"}</strong>
-                <div>{job.description}</div>
-                <div>Location: {job.location ?? "Not given"}</div>
-                <div className="muted">
-                  Customer: {job.customer_name ?? "Unknown"}
-                </div>
+                <StatusBadge status={job.status} />
+              </div>
+              <p>{job.description}</p>
+              <small className="muted">
+                {job.location ? `${job.location} · ` : ""}Customer: {job.customer_name ?? "Unknown"}
+              </small>
 
-                <div>
+              {stepIndex >= 0 && (
+                <ol className="steps">
                   {STEPS.map((step, i) => (
-                    <span
+                    <li
                       key={step}
-                      style={{
-                        fontWeight: step === job.status ? "bold" : "normal",
-                        opacity:
-                          STEPS.indexOf(job.status) >= i ? 1 : 0.4,
-                      }}
+                      className={i < stepIndex ? "done" : i === stepIndex ? "current" : ""}
                     >
-                      {i > 0 && " → "}
                       {step}
-                    </span>
+                    </li>
                   ))}
-                </div>
+                </ol>
+              )}
 
-                {next && (
-                  <button
-                    onClick={() => handleNext(job)}
-                    disabled={busyId === job.id}
-                  >
+              {next && (
+                <div className="item-actions">
+                  <button onClick={() => handleNext(job)} disabled={busyId === job.id}>
                     {next.label}
                   </button>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      )}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </main>
   );
 }

@@ -52,56 +52,52 @@ export default function BrowseRequests() {
     }
   }
 
-  if (loading) return <p>Loading requests...</p>;
-
   return (
     <main className="page">
-      <Link to="/provider">Back to dashboard</Link>
-      <h1>Incoming requests</h1>
+      <div className="page-head">
+        <h1>Incoming requests</h1>
+        <p className="muted">Open requests in the categories you serve.</p>
+      </div>
 
-      {error && <p role="alert">{error}</p>}
+      {error && <p className="error" role="alert">{error}</p>}
+      {loading && <p className="muted">Loading requests...</p>}
 
-      {requests.length === 0 ? (
-        <p className="muted">
-          No open requests right now. Requests only appear for the categories you
-          chose in <Link to="/provider/profile">your profile</Link>.
-        </p>
-      ) : (
-        <ul>
-          {requests.map((r) => (
-            <li key={r.id} className="card">
-              <strong>{r.category_name ?? "Service request"}</strong>
-              <div>{r.description}</div>
-              <div>Location: {r.location ?? "Not given"}</div>
-              <div className="muted">
-                From {r.customer_name ?? "a customer"} ·{" "}
-                {new Date(r.created_at).toLocaleString()}
+      {!loading && requests.length === 0 && (
+        <div className="empty">
+          No open requests right now. Requests only appear for the categories you chose in{" "}
+          <Link to="/provider/profile">your profile</Link>.
+        </div>
+      )}
+
+      <ul className="list">
+        {requests.map((r) => (
+          <li key={r.id} className="item request-item">
+            <div className="request-body">
+              <div className="item-head">
+                <strong>{r.category_name ?? "Service request"}</strong>
+                <span className="muted">{new Date(r.created_at).toLocaleDateString()}</span>
               </div>
-              {r.photo_url && (
-                <img
-                  src={r.photo_url}
-                  alt="Request photo"
-                  style={{ width: 80, height: 80, objectFit: "cover" }}
-                />
-              )}
-              <div>
-                <button
-                  onClick={() => handleAccept(r.id)}
-                  disabled={busyId === r.id}
-                >
+              <p>{r.description}</p>
+              <small className="muted">
+                {r.location ? `${r.location} · ` : ""}From {r.customer_name ?? "a customer"}
+              </small>
+              <div className="item-actions row">
+                <button onClick={() => handleAccept(r.id)} disabled={busyId === r.id}>
                   Accept
-                </button>{" "}
+                </button>
                 <button
+                  className="btn-outline"
                   onClick={() => handleDecline(r.id)}
                   disabled={busyId === r.id}
                 >
                   Decline
                 </button>
               </div>
-            </li>
-          ))}
-        </ul>
-      )}
+            </div>
+            {r.photo_url && <img src={r.photo_url} alt="Request" className="thumb" />}
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }

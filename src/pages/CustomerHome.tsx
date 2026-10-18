@@ -1,36 +1,44 @@
-import { Link, useNavigate } from "react-router-dom";
-import { getCurrentUser, logout } from "../services/authService";
+import { Link } from "react-router-dom";
+import { getCurrentUser } from "../services/authService";
 import CustomerDashboard from "./CustomerDashboard";
+import Icon, { type IconName } from "../components/Icon";
+
+const TILES: { to: string; icon: IconName; title: string; text: string }[] = [
+  { to: "/categories", icon: "grid", title: "Browse services", text: "See everything you can book." },
+  { to: "/providers", icon: "users", title: "Find providers", text: "Compare ratings and reviews." },
+  { to: "/requests/new", icon: "plus", title: "New request", text: "Describe a problem and send it." },
+  { to: "/history", icon: "clock", title: "History", text: "Review your past requests." },
+];
 
 export default function CustomerHome() {
-  const navigate = useNavigate();
   const user = getCurrentUser();
-
-  function handleLogout() {
-    logout();
-    navigate("/login");
-  }
+  const firstName = user?.name.split(" ")[0] ?? "there";
 
   return (
     <main className="page">
-      <header className="topbar">
-        <strong>FixTrail</strong>
-        <div>
-          <span className="muted">{user?.name} (Customer)</span>
-          <button onClick={handleLogout}>Log out</button>
+      <section
+        className="hero"
+        style={{ backgroundImage: "url(/images/home-customer.jpg)" }}
+      >
+        <div className="hero-inner">
+          <p className="eyebrow">Customer</p>
+          <h1>Hello, {firstName}.</h1>
+          <p>What needs fixing today? Post a request and trusted local providers will respond.</p>
+          <Link to="/requests/new" className="btn btn-light">Post a request</Link>
         </div>
-      </header>
-
-      <nav style={{ display: "flex", gap: 16, flexWrap: "wrap", margin: "12px 0" }}>
-        <Link to="/categories">Browse services</Link>
-        <Link to="/providers">Find providers</Link>
-        <Link to="/requests/new">New request</Link>
-        <Link to="/history">History</Link>
-      </nav>
-
-      <section className="card">
-        <CustomerDashboard />
       </section>
+
+      <section className="tiles">
+        {TILES.map((t) => (
+          <Link key={t.to} to={t.to} className="tile">
+            <span className="tile-icon"><Icon name={t.icon} /></span>
+            <strong>{t.title}</strong>
+            <span className="muted">{t.text}</span>
+          </Link>
+        ))}
+      </section>
+
+      <CustomerDashboard />
     </main>
   );
 }

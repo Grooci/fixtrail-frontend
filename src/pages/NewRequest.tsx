@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import type { Category } from "../types";
 import { getCategories } from "../services/categoryService";
 import { createRequest } from "../services/requestService";
@@ -9,8 +9,9 @@ const MAX_PHOTO_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export default function NewRequest() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const [categories, setCategories] = useState<Category[]>([]);
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryId, setCategoryId] = useState(params.get("category") ?? "");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -73,53 +74,63 @@ export default function NewRequest() {
   }
 
   return (
-    <main className="page">
-      <Link to="/customer">Back to dashboard</Link>
-      <h1>New service request</h1>
+    <main className="page page-narrow">
+      <div className="page-head">
+        <h1>New service request</h1>
+        <p className="muted">
+          Tell providers what needs fixing. The more detail you give, the better the responses.
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="card form-card">
         <label>
           Category
           <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
             <option value="">Choose a category</option>
             {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
+              <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
         </label>
 
         <label>
           Describe the problem
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} />
+          <textarea
+            rows={5}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="What is wrong, and when did it start?"
+          />
         </label>
 
         <label>
           Location
-          <input value={location} onChange={(e) => setLocation(e.target.value)} />
+          <input
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="Area or address"
+          />
         </label>
 
-        <label>
-          Photo (optional)
-          <input type="file" accept="image/*" onChange={handlePhoto} />
-        </label>
+        <div>
+          <span className="field-label">Photo (optional)</span>
+          {preview ? (
+            <div className="photo-preview">
+              <img src={preview} alt="Preview" />
+              <button type="button" className="btn-outline btn-sm" onClick={removePhoto}>
+                Remove photo
+              </button>
+            </div>
+          ) : (
+            <label className="upload">
+              <span>Choose a photo</span>
+              <small className="muted">PNG or JPG, up to 5 MB</small>
+              <input type="file" accept="image/*" onChange={handlePhoto} className="sr-only" />
+            </label>
+          )}
+        </div>
 
-        {preview && (
-          <div>
-            <img
-              src={preview}
-              alt="Preview"
-              style={{ width: 120, height: 120, objectFit: "cover" }}
-            />
-            <br />
-            <button type="button" onClick={removePhoto}>
-              Remove photo
-            </button>
-          </div>
-        )}
-
-        {error && <p>{error}</p>}
+        {error && <p className="error" role="alert">{error}</p>}
         <button type="submit" disabled={sending}>
           {sending ? "Sending..." : "Send request"}
         </button>

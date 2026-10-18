@@ -1,5 +1,4 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
 import {
   getCategoryOptions,
   getProviderProfile,
@@ -63,62 +62,73 @@ export default function ProviderSetup() {
     }
   }
 
-  if (loading) return <p>Loading profile...</p>;
-
   return (
-    <main className="page">
-      <Link to="/provider">Back to dashboard</Link>
-      <h1>My provider profile</h1>
+    <main className="page page-narrow">
+      <div className="page-head">
+        <h1>My provider profile</h1>
+        <p className="muted">
+          Customers see this when they browse providers. Choose the categories you serve to
+          receive matching requests.
+        </p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="card">
-        <label>
-          Bio
-          <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            rows={3}
-          />
-        </label>
+      {loading ? (
+        <p className="muted">Loading profile...</p>
+      ) : (
+        <form onSubmit={handleSubmit} className="card form-card">
+          <label>
+            Bio
+            <textarea
+              rows={4}
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Your experience and the kind of work you do"
+            />
+          </label>
 
-        <label>
-          Service area
-          <input
-            value={serviceArea}
-            onChange={(e) => setServiceArea(e.target.value)}
-            placeholder="e.g. Kampala"
-          />
-        </label>
+          <label>
+            Service area
+            <input
+              value={serviceArea}
+              onChange={(e) => setServiceArea(e.target.value)}
+              placeholder="e.g. Kampala"
+            />
+          </label>
 
-        <label>
-          <input
-            type="checkbox"
-            checked={isAvailable}
-            onChange={(e) => setIsAvailable(e.target.checked)}
-          />{" "}
-          I am available for new jobs
-        </label>
+          <div>
+            <span className="field-label">Categories you serve</span>
+            <div className="chip-group">
+              {categories.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  className={`chip-select${selected.includes(c.id) ? " on" : ""}`}
+                  aria-pressed={selected.includes(c.id)}
+                  onClick={() => toggleCategory(c.id)}
+                >
+                  {c.name}
+                </button>
+              ))}
+            </div>
+          </div>
 
-        <fieldset>
-          <legend>Categories you serve</legend>
-          {categories.map((c) => (
-            <label key={c.id} style={{ display: "block" }}>
-              <input
-                type="checkbox"
-                checked={selected.includes(c.id)}
-                onChange={() => toggleCategory(c.id)}
-              />{" "}
-              {c.name}
-            </label>
-          ))}
-        </fieldset>
+          <label className="check">
+            <input
+              type="checkbox"
+              checked={isAvailable}
+              onChange={(e) => setIsAvailable(e.target.checked)}
+            />
+            I am available for new jobs
+          </label>
 
-        {error && <p role="alert">{error}</p>}
-        {message && <p>{message}</p>}
+          {error && <p className="error" role="alert">{error}</p>}
+          {message && <p className="success">{message}</p>}
 
-        <button type="submit" disabled={saving}>
-          {saving ? "Saving..." : "Save profile"}
-        </button>
-      </form>
+          <button type="submit" disabled={saving}>
+            {saving ? "Saving..." : "Save profile"}
+          </button>
+        </form>
+      )}
     </main>
   );
 }
