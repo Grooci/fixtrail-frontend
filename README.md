@@ -6,8 +6,7 @@ This repository is the frontend (React and TypeScript). It talks to the FastAPI 
 
 > Built as part of the Zynvex Solutions Internship (Batch 4).
 
-**Live demo:** ADD-DEPLOYED-FRONTEND-LINK
-**API:** ADD-DEPLOYED-BACKEND-LINK
+**Live demo:** http://127.0.0.1:3000/login
 
 ## Progress
 
@@ -116,10 +115,10 @@ public/
 
 ![ Customer Login page](docs/screenshots/customer-login.png)
 ![ Provider Login page](docs/screenshots/provider-login.png)
-![Customer dashboard](docs/screenshots/customer-dashboard.png)
-![Provider dashboard](docs/screenshots/provider-dashboard.png)
+![ Customer dashboard](docs/screenshots/customer-dashboard.png)
+![ Provider dashboard](docs/screenshots/provider-dashboard.png)
 ![ Customer Service page](docs/screenshots/services-customer.png)
-![ Provider Job page](docs/screenshots/provider-jobs.png)
+![ Provider Job page](docs/screenshots/provider-job.png)
 
 ## Author
 Daniella
