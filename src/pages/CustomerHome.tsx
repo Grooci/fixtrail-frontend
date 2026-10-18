@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { getCurrentUser, logout } from "../services/authService";
+import CustomerDashboard from "./CustomerDashboard";
 
 export default function CustomerHome() {
   const navigate = useNavigate();
@@ -19,18 +20,16 @@ export default function CustomerHome() {
           <button onClick={handleLogout}>Log out</button>
         </div>
       </header>
-      <section className="card">
-        <h2>Customer dashboard</h2>
-        <p className="muted">
-          Service categories, the request form, and request history arrive in Module 3.
-        </p>
+
+      <nav style={{ display: "flex", gap: 16, flexWrap: "wrap", margin: "12px 0" }}>
         <Link to="/categories">Browse services</Link>
-        <br />
         <Link to="/providers">Find providers</Link>
-        <br />
         <Link to="/requests/new">New request</Link>
-        <br />
-        <Link to="/requests">My requests</Link>
+        <Link to="/history">History</Link>
+      </nav>
+
+      <section className="card">
+        <CustomerDashboard />
       </section>
     </main>
   );

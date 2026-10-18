@@ -11,6 +11,7 @@ import MyRequests from "./pages/MyRequests";
 import BrowseRequests from "./pages/BrowseRequests";
 import MyJobs from "./pages/MyJobs";
 import ProviderSetup from "./pages/ProviderSetup";
+import History from "./pages/History";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/providers" element={<Providers />} />
           <Route path="/requests/new" element={<NewRequest />} />
           <Route path="/requests" element={<MyRequests />} />
+          <Route path="/history" element={<History />} />
         </Route>
 
         <Route element={<ProtectedRoute role="provider" />}>

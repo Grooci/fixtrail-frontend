@@ -76,3 +76,93 @@ export interface Database {
   requests: ServiceRequest[];
   reviews: Review[];
 }
+
+export interface ApiReview {
+  id: string;
+  job_id: string;
+  reviewer_id: string;
+  reviewer_name: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+}
+
+export type JobStatus =
+  | "Requested" | "Accepted" | "In Progress"
+  | "Completed" | "Declined" | "Cancelled";
+
+export interface RequestSummary {
+  request_id: string;
+  description: string;
+  category_name: string | null;
+  status: JobStatus;
+  provider_name: string | null;
+  job_id: string | null;
+  has_review: boolean;
+  created_at: string;
+}
+
+export interface CustomerDashboard {
+  total_requests: number;
+  counts: Record<JobStatus, number>;
+  recent: RequestSummary[];
+}
+
+export interface ApiReview {
+  id: string;
+  job_id: string;
+  reviewer_id: string;
+  reviewer_name: string;
+  rating: number;
+  comment: string | null;
+  created_at: string;
+}
+
+export interface ProviderJobSummary {
+  job_id: string;
+  request_id: string;
+  description: string;
+  category_name: string | null;
+  customer_name: string;
+  location: string | null;
+  status: JobStatus;
+  updated_at: string;
+}
+
+export interface ProviderDashboard {
+  available_requests: number;
+  active_jobs: number;
+  completed_jobs: number;
+  average_rating: number;
+  total_reviews: number;
+  active: ProviderJobSummary[];
+  recent_reviews: ApiReview[];
+}
+
+export interface CustomerHistory {
+  total: number;
+  items: RequestSummary[];
+}
+
+export interface ProviderHistoryItem {
+  job_id: string;
+  request_id: string;
+  description: string;
+  category_name: string | null;
+  customer_name: string;
+  status: JobStatus;
+  rating: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProviderHistory {
+  total: number;
+  items: ProviderHistoryItem[];
+}
+
+export interface ProviderReviews {
+  average_rating: number;
+  total_reviews: number;
+  reviews: ApiReview[];
+}

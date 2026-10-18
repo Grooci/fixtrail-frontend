@@ -1,17 +1,19 @@
-import type { Provider } from "../types";
-import { loadDb } from "./storage";
 import { api } from "./apiClient";
 
-export interface ProviderWithName extends Provider {
+export interface PublicProvider {
+  id: string;
   name: string;
+  bio: string | null;
+  service_area: string | null;
+  is_available: boolean;
+  average_rating: number;
+  total_reviews: number;
+  categories: string[];
 }
 
-export async function getProviders(): Promise<ProviderWithName[]> {
-  const db = loadDb();
-  return db.providers.map((p) => ({
-    ...p,
-    name: db.users.find((u) => u.id === p.userId)?.name ?? "Unknown provider",
-  }));
+export function getProviders(categoryId?: string): Promise<PublicProvider[]> {
+  const qs = categoryId ? `?category_id=${encodeURIComponent(categoryId)}` : "";
+  return api<PublicProvider[]>(`/providers${qs}`);
 }
 
 export type JobStatus =

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { getCurrentUser, logout } from "../services/authService";
+import ProviderDashboard from "./ProviderDashboard";
 
 export default function ProviderHome() {
   const navigate = useNavigate();
@@ -19,19 +20,16 @@ export default function ProviderHome() {
           <button onClick={handleLogout}>Log out</button>
         </div>
       </header>
+
+      <nav style={{ display: "flex", gap: 16, flexWrap: "wrap", margin: "12px 0" }}>
+        <Link to="/provider/profile">My profile and categories</Link>
+        <Link to="/provider/requests">Incoming requests</Link>
+        <Link to="/provider/jobs">My jobs</Link>
+        <Link to="/history">History</Link>
+      </nav>
+
       <section className="card">
-        <h2>Provider dashboard</h2>
-        <ul>
-          <li>
-            <Link to="/provider/profile">My profile and categories</Link>
-          </li>
-          <li>
-            <Link to="/provider/requests">Incoming requests</Link>
-          </li>
-          <li>
-            <Link to="/provider/jobs">My jobs</Link>
-          </li>
-        </ul>
+        <ProviderDashboard />
       </section>
     </main>
   );
