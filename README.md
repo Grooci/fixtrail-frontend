@@ -1,5 +1,5 @@
 # FixTrail
-FixTrail is a service marketplace where customers post problems they need fixed and service providers browse, accept, and complete those jobs. This repository holds the frontend, built with React and TypeScript, and runs entirely in the browser using mock data.
+FixTrail is a service marketplace where customers post problems they need fixed and service providers browse, accept, and complete those jobs. This repository holds the frontend, built with React and TypeScript.
 
 > Built as part of the Zynvex Solutions Frontend Internship (Batch 4).
 
