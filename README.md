@@ -6,7 +6,8 @@ This repository is the frontend (React and TypeScript). It talks to the FastAPI 
 
 > Built as part of the Zynvex Solutions Internship (Batch 4).
 
-**Live demo:** http://127.0.0.1:3000/login
+**Live demo:** https://fixtrail.netlify.app
+**API:** https://fixtrail-backend.onrender.com
 
 ## Progress
 
